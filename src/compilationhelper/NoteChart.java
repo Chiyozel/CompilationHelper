@@ -18,6 +18,7 @@ import java.util.Scanner;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import utils.FolderUtils;
 import utils.Note;
 
 /**
@@ -27,13 +28,14 @@ import utils.Note;
 public class NoteChart {
 
     private File newChart;
-    private File file;
-    private final int startTime;
-    private final int endTime;
-    private final int copyMarker;
-    private final String filePath;
+    private File f;
+    private int startTime;
+    private int endTime;
+    private int copyMarker;
+    private String filePath;
     private CopyOnWriteArrayList<Note> notes;
     private boolean isNewFile;
+    private File folder;
 
     /**
      * Constructor of NoteChart.
@@ -46,11 +48,20 @@ public class NoteChart {
         /* This is so we know whether the file is new or not */
         this.isNewFile = false;
 
-        /* Input file.
+        /* Checks if the osu!maps folder exists. If it's not the case, then the
+         program creates it.
+         */
+        folder = new File("./osuMaps/");
+        checkForFolder();
+
+        /* Input file Array.
          This should be changed, someday. I will certainly make a
          file-per-file thing, but right now it's already working wonders.
          */
-        file = new File("./ToCopy.osu");
+        CopyOnWriteArrayList<File> files = FolderUtils.listFiles(new File("./osuMaps/"));
+        if (f != null) {
+            files.add(f);
+        }
 
         /* Output file. I think I'll leave it as Notes.osu, despite the .osu
          extension being technically unnecessary since the user just has to
@@ -70,43 +81,31 @@ public class NoteChart {
 
         /* Creates an empty list of notes.*/
         notes = new CopyOnWriteArrayList<>();
+        if (files.size() > 0) {
+            files.stream().forEach((file) -> {
+                processFile(file, sc);
+            });
+        } else {
+            System.out.println("No files found!");
+        }
 
+        closeProgram();
+    }
 
-        /* Tells you what's the map to scan. filePath is a String that's usedfor
-         listNotes.
-         */
-        System.out.println("Absolute path of the file to scan: " + file.getAbsolutePath());
-        filePath = file.getAbsolutePath();
-
-        /* Where to extract notes. Useful for deleteNotes(). */
-        System.out.println("Enter the beginning of the section to extract (ms)");
-        startTime = sc.nextInt();
-        System.out.println("Enter the end of the section to extract (ms)");
-        endTime = sc.nextInt();
-
-        /* Lists notes in the whole osu! chart, then deletes them to keep only
-         the interesting section the user keyed in.
-         */
-        this.listNotes();
-        System.out.println("List created. Deletion of unnecessary notes...");
-        this.deleteNotes();
-
-        /* Then, after the deletion is finished, there's almost no chance
-         the notes from the original map will end up in the compilation.
-         So, the user must key in his desired spot for the first note.
-         */
-        System.out.println("Deletion complete. Where do you want to put the notes?");
-        copyMarker = sc.nextInt();
-
-        /* And then, the file is outputted.*/
-        this.createFile();
-
+    /**
+     * Constructor of NoteChart.
+     *
+     * @param input The known file.
+     */
+    public NoteChart(File input) {
+        this();
+        f = input;
     }
 
     /**
      * Method that makes the list of all the notes.
      */
-    public void listNotes() {
+    private void listNotes() {
         try {
 
             /* These objects are here to read the file from "osu blabla" to the
@@ -152,8 +151,8 @@ public class NoteChart {
                 );
             }
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException | NumberFormatException e) {
+            System.err.println(e.toString());
         }
 
     }
@@ -161,7 +160,7 @@ public class NoteChart {
     /**
      * Deletes unnecessary notes from the notechart.
      */
-    public void deleteNotes() {
+    private void deleteNotes() {
         /* For each note that isn't in the range, delete it. */
         notes.stream().filter((n) -> (n.getMillis() < startTime || n.getMillis() > endTime)).forEach((n) -> {
             notes.remove(n);
@@ -171,7 +170,7 @@ public class NoteChart {
     /**
      * Creates a new file.
      */
-    public void createFile() {
+    private void createFile() {
         /* Difference so the notes are ACTUALLY moved */
         int difference = copyMarker - startTime;
 
@@ -189,7 +188,7 @@ public class NoteChart {
             if (this.isNewFile) {
                 pw.append("// Copy-paste the section below to your .osu file.");
                 bw.newLine();
-                pw.append("[HitObjects");
+                pw.append("[HitObjects]");
                 bw.newLine();
             }
 
@@ -213,6 +212,62 @@ public class NoteChart {
     }
 
     /**
+     * Checks if the folder exists.
+     *
+     * @return boolean
+     */
+    private void checkForFolder() {
+        if (!folder.exists()) {
+            folder.mkdir();
+            System.out.println("Directory ./osuMaps/ created.\n"
+                    + "Place all the files in the folder and restart the program.\n");
+            closeProgram();
+        }
+    }
+
+    
+    /**
+     * Processes a map file.
+     * @param file
+     * @param sc 
+     */
+    private void processFile(File file, Scanner sc) {
+        f = file;
+
+        /* Tells you what's the map to scan. filePath is a String that's usedfor
+         listNotes.
+         */
+        System.out.println("Name of the map to scan: " + f.getAbsolutePath());
+        filePath = f.getAbsolutePath();
+
+        System.out.println("Do you want to scan this file? (y/n) ");
+        if (sc.next().equals("y")) {
+            /* Where to extract notes. Useful for deleteNotes(). */
+            System.out.println("Enter the beginning of the section to extract (ms)");
+            startTime = sc.nextInt();
+            System.out.println("Enter the end of the section to extract (ms)");
+            endTime = sc.nextInt();
+
+            /* Lists notes in the whole osu! chart, then deletes them to keep only
+             the interesting section the user keyed in.
+             */
+            this.listNotes();
+            System.out.println("List created. Deletion of unnecessary notes...");
+            this.deleteNotes();
+
+            /* Then, after the deletion is finished, there's almost no chance
+             the notes from the original map will end up in the compilation.
+             So, the user must key in his desired spot for the first note.
+             */
+            System.out.println("Deletion complete. Where do you want to put the notes?");
+            copyMarker = sc.nextInt();
+
+            /* And then, the file is outputted.*/
+            this.createFile();
+        }
+    }
+
+    /**
      *
      * @return a string containing all the notes.
      */
@@ -223,4 +278,15 @@ public class NoteChart {
         s = notes.stream().map((n) -> n.toString() + "\n").reduce(s, String::concat);
         return s;
     }
+
+    private void closeProgram() {
+        System.out.println("This program will close itself in 5 seconds.");
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(NoteChart.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        System.exit(0);
+    }
+
 }

@@ -44,4 +44,11 @@ public class TaikoUtils {
         });
     }
 
+    public static void randomize(List<Note> list) {
+        list.stream().forEach((n) -> {
+            int hs = (int) (2 * Math.random());
+            hs *= 8;
+            n.setHitsound(hs);
+        });
+    }
 }
