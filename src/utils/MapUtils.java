@@ -74,7 +74,11 @@ public class MapUtils {
                 String[] values = l.split(",");
                 String params = "";
                 for (int index = 5; index < values.length; index++) {
-                    params += values[index];
+                    if (index < values.length - 1) {
+                        params += values[index] + ",";
+                    } else {
+                        params += values[index];
+                    }
                 }
                 notes.add(new Note(
                         Integer.parseInt(values[0]),
@@ -124,7 +128,11 @@ public class MapUtils {
                 String[] values = l.split(",");
                 String params = "";
                 for (int index = 5; index < values.length; index++) {
-                    params += values[index];
+                    if (index < values.length - 1) {
+                        params += values[index] + ",";
+                    } else {
+                        params += values[index];
+                    }
                 }
                 notes.add(new Note(
                         Integer.parseInt(values[0]),
@@ -165,8 +173,6 @@ public class MapUtils {
                 if (contents == null || contents.isEmpty()) {
                     pw.append("// Copy-paste the section below to your .osu file.");
                     bw.newLine();
-                    pw.append("[HitObjects]");
-                    bw.newLine();
                 } else {
                     String[] newContents = contents.split("\n");
                     for (String s : newContents) {
@@ -178,8 +184,9 @@ public class MapUtils {
                     }
                     bw.newLine();
                 }
+                pw.append("[HitObjects]");
+                bw.newLine();
             }
-
             for (Note n : notes) {
                 n.move(difference);
                 pw.append(n.outputOsuFile());
