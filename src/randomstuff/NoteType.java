@@ -26,16 +26,16 @@ public class NoteType {
         }
         this.type = "";
         if (getBit(type, 0)==1) {
-            this.type += "N";
+            this.type += "[Note]";
         }
         if (getBit(type, 1)==1) {
-            this.type += "S";
+            this.type += "[Slider]";
         }
         if (getBit(type, 2)==1) {
-            this.type += "C";
+            this.type += "[New Combo]";
         }
         if (getBit(type, 3)==1) {
-            this.type += "P";
+            this.type += "[Spinner]";
         }
     }
 

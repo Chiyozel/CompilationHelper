@@ -12,7 +12,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  *
  * @author Gezochan
  */
-public class FolderUtils {
+public interface FolderUtils {
 
     public static CopyOnWriteArrayList<File> listFiles(final File folder) {
         CopyOnWriteArrayList<File> files = new CopyOnWriteArrayList<>();
@@ -24,5 +24,20 @@ public class FolderUtils {
             }
         }
         return files;
+    }
+
+    /**
+     *
+     * @param folder
+     * @return boolean
+     */
+    public static boolean checkForFolder(File folder) {
+        if (!folder.exists()) {
+            folder.mkdir();
+            System.out.println("Directory ./osuMaps/ created.\n"
+                    + "Place all the files in the folder and restart the program.\n");
+            return true;
+        }
+        return false;
     }
 }

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package randomstuff;
+package utils;
 
 import java.util.List;
 import utils.Note;
@@ -49,6 +49,39 @@ public class TaikoUtils {
             int hs = (int) (2 * Math.random());
             hs *= 8;
             n.setHitsound(hs);
+        });
+    }
+
+    public static void center(Note n) {
+        n.moveTo(256, 192);
+    }
+
+    public static void centerAllNotes(List<Note> list) {
+        list.stream().forEach((n) -> {
+            center(n);
+        });
+    }
+
+    public static void sortNote(Note n) {
+        int hs = n.getHitsound();
+        if (((hs >> 1) & 1) == 1 || ((hs >> 3) & 1) == 1) {
+            if (((hs >> 2) & 1) == 1) {
+                n.moveTo(64,64);
+            } else {
+                n.moveTo(64,320);
+            }
+        } else {
+            if (((hs >> 2) & 1) == 1) {
+                n.moveTo(448,64);
+            } else {
+                n.moveTo(448,320);
+            }
+        }
+    }
+    
+    public static void sortAllNotes(List<Note> list){
+        list.stream().forEach((n) -> {
+            sortNote(n);
         });
     }
 }

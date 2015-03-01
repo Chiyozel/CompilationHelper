@@ -20,7 +20,7 @@ public class Hitsound {
     private String type;
     private int number;
 
-    public Hitsound(int hs) throws InvalidHitsoundException {
+    public Hitsound(int hs) throws InvalidHitsoundException{
         if (hs > 15) {
             throw new InvalidHitsoundException();
         }
@@ -31,13 +31,13 @@ public class Hitsound {
     private void changeType() {
         this.type = "";
         if (getBit(number, 1) == 1) {
-            this.type += "W";
+            this.type += "[Whistle]";
         }
         if (getBit(number, 2) == 1) {
-            this.type += "F";
+            this.type += "[Finish]";
         }
         if (getBit(number, 3) == 1) {
-            this.type += "C";
+            this.type += "[Clap]";
         }
     }
 

@@ -7,6 +7,10 @@ package utils;
 
 import exception.InvalidHitsoundException;
 import exception.InvalidTypeException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import randomstuff.Hitsound;
+import randomstuff.NoteType;
 
 /**
  *
@@ -21,6 +25,17 @@ public class Note {
     private int hs;
     private String params;
 
+    /**
+     * Creates a new note, to be outputted in a file.
+     *
+     * @param x X-axis of the note
+     * @param y Y-axis of the note
+     * @param ms time position of the note
+     * @param nt type of the note (Slider, Note, Spinner, New Combo)
+     * @param hs hitsound of the note (No HS, Whistle, Clap, Finish)
+     * @param params special parameters of the note (HS additions, possible
+     * hitsounding)
+     */
     public Note(int x, int y, long ms, int nt, int hs, String params) {
         this.x = x;
         this.y = y;
@@ -29,26 +44,40 @@ public class Note {
         this.hs = hs;
         this.params = params;
     }
-    
+
+    /**
+     * 
+     * @return Human-readable version of the note
+     */
     @Override
-    public String toString(){
-        return "Position: ("+x+","+y+")\tTime: "+ms+"\tType: "+nt+"\tHitsounds: "+hs+"\tSpecial Parameter: "+params;
+    public String toString() {
+        String s="";
+        try {
+            s = "NOTE {\n\tPosition: (" + x + "," + y + ")"
+                    + "\n\tTime: " + ms
+                    + "\n\tType: " + new NoteType(nt)
+                    + "\n\tHitsounds: " + new Hitsound(hs)
+                    + "\n\tSpecial Parameter: " + params
+                    + "}";
+        } catch (InvalidTypeException | InvalidHitsoundException ex) {
+            Logger.getLogger(Note.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return s;
     }
-    
-    public String outputOsuFile(){
-        return x+","+y+","+ms+","+nt+","+hs+","+params;
+
+    /**
+     * 
+     * @return osu!-readable version of the note
+     */
+    public String outputOsuFile() {
+        return x + "," + y + "," + ms + "," + nt + "," + hs + "," + params;
     }
-    
-    public void center(){
-        x=256;
-        y=192;
+
+    public void move(int offset) {
+        ms += offset;
     }
-    
-    public void move(int offset){
-        ms+=offset;
-    }
-    
-    public long getMillis(){
+
+    public long getMillis() {
         return ms;
     }
 
@@ -58,5 +87,10 @@ public class Note {
 
     public void setHitsound(int i) {
         hs = i;
+    }
+    
+    public void moveTo(int x, int y){
+        this.x = x;
+        this.y = y;
     }
 }
