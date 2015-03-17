@@ -14,6 +14,12 @@ import utils.Note;
  */
 public class TaikoUtils {
 
+    /**
+     * Reverses the hitsounds (Don -> Kat, Kat -> Don) of a complete Taiko
+     * notechart.
+     *
+     * @param list List of notes from a section or a whole file to modify
+     */
     public static void invertAllHitsounds(List<Note> list) {
         list.stream().forEach((Note n) -> {
             int hs = n.getHitsound();
@@ -33,6 +39,11 @@ public class TaikoUtils {
         });
     }
 
+    /**
+     * Makes every note a big note
+     *
+     * @param list List of notes from a section or a whole file to modify
+     */
     public static void capsNotes(List<Note> list) {
         list.stream().forEach((n) -> {
             int hs = n.getHitsound();
@@ -44,6 +55,10 @@ public class TaikoUtils {
         });
     }
 
+    /**
+     *
+     * @param list
+     */
     public static void randomize(List<Note> list) {
         list.stream().forEach((n) -> {
             int hs = (int) (2 * Math.random());
@@ -52,34 +67,50 @@ public class TaikoUtils {
         });
     }
 
+    /**
+     *
+     * @param n
+     */
     public static void center(Note n) {
         n.moveTo(256, 192);
     }
 
+    /**
+     *
+     * @param list
+     */
     public static void centerAllNotes(List<Note> list) {
         list.stream().forEach((n) -> {
             center(n);
         });
     }
 
+    /**
+     *
+     * @param n
+     */
     public static void sortNote(Note n) {
         int hs = n.getHitsound();
         if (((hs >> 1) & 1) == 1 || ((hs >> 3) & 1) == 1) {
             if (((hs >> 2) & 1) == 1) {
-                n.moveTo(64,64);
+                n.moveTo(64, 64);
             } else {
-                n.moveTo(64,320);
+                n.moveTo(64, 320);
             }
         } else {
             if (((hs >> 2) & 1) == 1) {
-                n.moveTo(448,64);
+                n.moveTo(448, 64);
             } else {
-                n.moveTo(448,320);
+                n.moveTo(448, 320);
             }
         }
     }
-    
-    public static void sortAllNotes(List<Note> list){
+
+    /**
+     *
+     * @param list
+     */
+    public static void sortAllNotes(List<Note> list) {
         list.stream().forEach((n) -> {
             sortNote(n);
         });

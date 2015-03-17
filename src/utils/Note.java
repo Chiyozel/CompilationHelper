@@ -72,7 +72,10 @@ public class Note {
     public String outputOsuFile() {
         return x + "," + y + "," + ms + "," + nt + "," + hs + "," + params;
     }
-
+    /**
+     * Moves the note in the timeline
+     * @param offset Relative position of the note (in milliseconds)
+     */
     public void move(int offset) {
         ms += offset;
     }
@@ -84,11 +87,20 @@ public class Note {
     public int getHitsound() {
         return hs;
     }
+    
+    /**
+     * Sets a new hitsound to the note
+     * @param i The new hitsound
+     */
 
     public void setHitsound(int i) {
         hs = i;
     }
-    
+    /**
+     * Moves the note to a precise point in the 2D space
+     * @param x X-axis of the note
+     * @param y Y-axis of the note
+     */
     public void moveTo(int x, int y){
         this.x = x;
         this.y = y;
