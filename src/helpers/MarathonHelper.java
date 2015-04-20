@@ -3,7 +3,7 @@
  * are probably reading that better commentate the shit out of that code.
  * Also, LE DESSERT.
  */
-package compilationhelper;
+package helpers;
 
 import java.io.File;
 import java.io.IOException;

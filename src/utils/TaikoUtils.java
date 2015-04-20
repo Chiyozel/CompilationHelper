@@ -6,7 +6,6 @@
 package utils;
 
 import java.util.List;
-import utils.Note;
 
 /**
  *
@@ -14,30 +13,6 @@ import utils.Note;
  */
 public class TaikoUtils {
 
-    /**
-     * Reverses the hitsounds (Don -> Kat, Kat -> Don) of a complete Taiko
-     * notechart.
-     *
-     * @param list List of notes from a section or a whole file to modify
-     */
-    public static void invertAllHitsounds(List<Note> list) {
-        list.stream().forEach((Note n) -> {
-            int hs = n.getHitsound();
-            if (((hs >> 1) & 1) == 1 || ((hs >> 3) & 1) == 1) {
-                if (((hs >> 2) & 1) == 1) {
-                    n.setHitsound(4);
-                } else {
-                    n.setHitsound(0);
-                }
-            } else {
-                if (((hs >> 2) & 1) == 1) {
-                    n.setHitsound(12);
-                } else {
-                    n.setHitsound(8);
-                }
-            }
-        });
-    }
 
     /**
      * Makes every note a big note
@@ -55,17 +30,6 @@ public class TaikoUtils {
         });
     }
 
-    /**
-     *
-     * @param list
-     */
-    public static void randomize(List<Note> list) {
-        list.stream().forEach((n) -> {
-            int hs = (int) (2 * Math.random());
-            hs *= 8;
-            n.setHitsound(hs);
-        });
-    }
 
     /**
      *
@@ -115,4 +79,42 @@ public class TaikoUtils {
             sortNote(n);
         });
     }
+
+    /**
+     * Reverses the hitsounds (Don -> Kat, Kat -> Don) of a complete Taiko
+     * notechart.
+     *
+     * @param list List of notes from a section or a whole file to modify
+     */
+    public static void invertAllHitsounds(List<Note> list) {
+        list.stream().forEach((Note n) -> {
+            int hs = n.getHitsound();
+            if (((hs >> 1) & 1) == 1 || ((hs >> 3) & 1) == 1) {
+                if (((hs >> 2) & 1) == 1) {
+                    n.setHitsound(4);
+                } else {
+                    n.setHitsound(0);
+                }
+            } else {
+                if (((hs >> 2) & 1) == 1) {
+                    n.setHitsound(12);
+                } else {
+                    n.setHitsound(8);
+                }
+            }
+        });
+    }
+
+    /**
+     *
+     * @param list
+     */
+    public static void randomize(List<Note> list) {
+        list.stream().forEach((Note n) -> {
+            int hs = (int) (2 * Math.random());
+            hs *= 8;
+            n.setHitsound(hs);
+        });
+    }
+
 }

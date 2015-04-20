@@ -3,26 +3,29 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package utils;
+package helpers;
 
-import compilationhelper.MarathonHelper;
 import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import utils.FolderUtils;
+import utils.MapUtils;
+import utils.Storyboard;
+import utils.TaikoUtils;
 
 /**
  *
  * @author Gezochan
  */
-public class TaikoReader extends MapUtils implements FolderUtils {
+public class TaikoSBHelper extends MapUtils implements FolderUtils {
 
     /**
      * Constructor of NoteChart.
      */
-    public TaikoReader() {
+    public TaikoSBHelper() {
 
         /* You know, to input the values you need that, in console.*/
         Scanner sc = new Scanner(System.in);
@@ -52,10 +55,10 @@ public class TaikoReader extends MapUtils implements FolderUtils {
          append the output file to the used .osu file.
          The file, if not existing, must be created.
          */
-        newChart = new File("./TaikoNew.osu");
+        newChart = new File("./SB.osb");
         if (!newChart.exists()) {
             try {
-                System.out.println("Taiko.osu created.");
+                System.out.println("SB.osb created.");
                 newChart.createNewFile();
                 isNewFile = true;
             } catch (IOException ex) {
@@ -90,7 +93,7 @@ public class TaikoReader extends MapUtils implements FolderUtils {
     public String toString() {
         
         String s = "Notes :\n";
-        s = notes.stream().map((n) -> n.toString() + "\n").reduce(s, String::concat);
+    //    s = notes.stream().map((n) -> n.toString() + "\n").reduce(s, String::concat);
         return s;
     }
 
@@ -133,33 +136,55 @@ public class TaikoReader extends MapUtils implements FolderUtils {
             /* Where to extract notes. Useful for deleteNotes(). */
             System.out.println(
                     "What do you want to do?\n"
-                    + "1.\tAbekobe mode (Invert all hitsounds)\n"
-                    + "2.\tAll notes are big notes\n"
-                    + "3.\tRandomize the map\n"
-                    + "4.\tCenter all notes\n"
-                    + "5.\tPart all notes per hitsound\n"
+                    + "\t(Everything there has been used for MariannE)\n"
+                    + "1.\tNote counter (Left side) -- Needs manual check\n"
+                    + "2.\tNote counter (Right side) -- Needs manual check\n"
+                    + "3.\tNote counter (Right side, mirrored) -- Needs manual check\n"
+                    + "4.\tDouble scrolling mode\n"
+                    + "5.\tGravity Mode\n"
+                    + "6.\tAbekobe\n"
+                    + "7.\tLeft to Right Abekobe\n"
+                    + "8.\tReversed Scroll\n"
+                    + "9.\tPincer Movement Scroll\n"
+                    + "10.\tNormal Scroll Mode...\n"
             );
             type = sc.nextInt();
             /* Lists notes in the whole osu! chart, then deletes them to keep only
              the interesting section the user keyed in.
              */
-            this.copyMap();
-            System.out.println("List created. Applying modification");
             switch (type) {
                 case 1:
-                    TaikoUtils.invertAllHitsounds(notes);
+                    Storyboard.counter(notes);
                     break;
                 case 2:
-                    TaikoUtils.capsNotes(notes);
+                    Storyboard.counter2(notes);
                     break;
                 case 3:
-                    TaikoUtils.randomize(notes);
+                    Storyboard.counter3(notes);
                     break;
                 case 4:
-                    TaikoUtils.centerAllNotes(notes);
+                    Storyboard.dScroll(notes);
                     break;
                 case 5:
-                    TaikoUtils.sortAllNotes(notes);
+                    Storyboard.gravity(notes);
+                    break;
+                case 6:
+                    Storyboard.mirror(notes);
+                    break;
+                case 7:
+                    Storyboard.mirror2(notes);
+                    break;
+                case 8:
+                    Storyboard.reverseScroll(notes);
+                    break;
+                case 9:
+                    Storyboard.piMoScroll(notes);
+                    break;
+                case 10:
+                    System.out.println("------------\nAt which speed do you want it to go?");
+                    double speed = sc.nextDouble();
+                    if (speed<=0) speed=1.;
+                    Storyboard.scroll(notes, speed);
                     break;
                 default:
                     System.out.println("Wrong choice.");
@@ -169,13 +194,8 @@ public class TaikoReader extends MapUtils implements FolderUtils {
              the notes from the original map will end up in the compilation.
              So, the user must key in his desired spot for the first note.
              */
-            System.out.println("Application of modification complete.");
             /* And then, the file is outputted.*/
-            this.createFile();
+        //    this.createFile();
         }
-    }
-    
-    private boolean isTaikoMap() {
-        return contents.contains("Mode: 1\nLetterboxInBreaks");
     }
 }

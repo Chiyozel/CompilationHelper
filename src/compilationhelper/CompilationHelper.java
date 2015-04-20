@@ -5,8 +5,10 @@
  */
 package compilationhelper;
 
+import helpers.MarathonHelper;
+import helpers.TaikoSBHelper;
 import java.util.Scanner;
-import utils.TaikoReader;
+import helpers.TaikoReader;
 
 /**
  *
@@ -24,6 +26,7 @@ public class CompilationHelper {
                 "What do you want to do?\n"
                 + "1.\tCreate a marathon\n"
                 + "2.\tModify a Taiko map\n"
+                + "3.\t Storyboard stuff\n"
                 + "Other choice:\tExit"
         );
 
@@ -36,6 +39,8 @@ public class CompilationHelper {
             case 2:
                 TaikoReader taikoReader = new TaikoReader();
                 break;
+            case 3:
+                TaikoSBHelper sb = new TaikoSBHelper();
             default:
                 System.exit(0);
         }

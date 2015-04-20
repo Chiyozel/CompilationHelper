@@ -5,7 +5,7 @@
  */
 package utils;
 
-import compilationhelper.MarathonHelper;
+import helpers.MarathonHelper;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
